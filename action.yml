@@ -16,10 +16,8 @@ runs:
   using: "composite"
   steps:
     - uses: aws-actions/configure-aws-credentials@master
-      env:
-        ROLE_ARN: ${{ inputs.roleArn }}
       with:
-        role-to-assume: "$ROLE_ARN"
+        role-to-assume: ${{ inputs.roleArn }}
         aws-region: ca-central-1
 
     - name: Get host bucket name
