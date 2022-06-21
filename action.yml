@@ -37,7 +37,7 @@ runs:
     - name: Sync to S3
       env:
         BUCKET_NAME: ${{fromJson(steps.bucket.outputs.BUCKET_NAME).parameter.value}}
-      run: aws s3 sync ./dist s3://${{ env.BUCKET_NAME }} --delete --exclude '*.zip' --exclude 'mockServiceWorker.js'
+      run: aws s3 sync ./dist s3://${{ env.BUCKET_NAME }} --delete --exclude '*.zip' --exclude 'mockServiceWorker.js' --cache-control max-age=31536000
       shell: bash
 
     - name: Invalidate CloudFront distribution path
