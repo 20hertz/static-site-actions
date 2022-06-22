@@ -38,10 +38,17 @@ runs:
       env:
         BUCKET_NAME: ${{fromJson(steps.bucket.outputs.BUCKET_NAME).parameter.value}}
       run: |
-        aws s3 rm s3://${{ env.BUCKET_NAME }}/* --recursive
-        aws s3 cp ./dist/index.html s3://${{ env.BUCKET_NAME }}/index.html --cache-control no-cache
-        aws s3 sync ./dist s3://${{ env.BUCKET_NAME }} --exclude 'assets/*' --exclude 'index.html' --exclude 'mockServiceWorker.js' --cache-control max-age=84600,public
-        aws s3 sync ./dist/assets s3://${{ env.BUCKET_NAME }}/assets --exclude '*.zip' --cache-control max-age=31536000,public
+        aws s3 rm s3://${{ env.BUCKET_NAME }}/* \
+          --recursive
+        aws s3 cp ./dist/index.html s3://${{ env.BUCKET_NAME }}/index.html \
+          --cache-control max-age=300,private,must-revalidate
+        aws s3 sync ./dist s3://${{ env.BUCKET_NAME }} --exclude 'assets/*' \
+          --exclude 'index.html' /
+          --cache-control max-age=604800,stale-while-revalidate=86400
+        aws s3 sync ./dist/assets s3://${{ env.BUCKET_NAME }}/assets \
+          --exclude '*.zip' /
+          --cache-control max-age=31536000,immutable
+        aws s3 rm s3://${{ env.BUCKET_NAME }}/mockServiceWorker.js
       shell: bash
 
     - name: Invalidate CloudFront distribution path
