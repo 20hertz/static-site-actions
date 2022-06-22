@@ -43,10 +43,10 @@ runs:
         aws s3 cp ./dist/index.html s3://${{ env.BUCKET_NAME }}/index.html \
           --cache-control max-age=300,private,must-revalidate
         aws s3 sync ./dist s3://${{ env.BUCKET_NAME }} --exclude 'assets/*' \
-          --exclude 'index.html' /
+          --exclude 'index.html' \
           --cache-control max-age=604800,stale-while-revalidate=86400
         aws s3 sync ./dist/assets s3://${{ env.BUCKET_NAME }}/assets \
-          --exclude '*.zip' /
+          --exclude '*.zip' \
           --cache-control max-age=31536000,immutable
         aws s3 rm s3://${{ env.BUCKET_NAME }}/mockServiceWorker.js
       shell: bash
